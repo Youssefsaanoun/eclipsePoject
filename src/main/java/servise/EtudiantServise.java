@@ -10,7 +10,7 @@ public interface EtudiantServise {
 
 	   List<Etudiant> GetAllEtudiant();
 
-	   Optional<Etudiant> getEudiantById(Long var1);
+	  Etudiant getEudiantById(Long var1);
 
 	   void DeleteEtudiant(Long var1);
 

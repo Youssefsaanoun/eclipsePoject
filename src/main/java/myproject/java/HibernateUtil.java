@@ -30,7 +30,7 @@ public class HibernateUtil {
                 settings.put("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
                 settings.put("hibernate.show_sql", "true");
                 settings.put("hibernate.format_sql", "true");
-                settings.put("hibernate.hbm2ddl.auto", "create"); // Options: validate | update | create | create-drop
+                settings.put("hibernate.hbm2ddl.auto", "update"); // Options: validate | update | create | create-drop
                 
                 configuration.setProperties(settings);
 

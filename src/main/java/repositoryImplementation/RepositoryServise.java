@@ -1,51 +1,99 @@
 package repositoryImplementation;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import Models.Etudiant;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.hibernate.query.Query;
+
 import repository.EtudiantRepository;
+import myproject.java.HibernateUtil;
 
-public class RepositoryServise implements EtudiantRepository{
-	private List<Etudiant> etudiants = new ArrayList<>();
-	@Override
-	public List<Etudiant> GetAllEtudiant() {
-			return etudiants;
-	}
+public class RepositoryServise implements EtudiantRepository {
 
-	@Override
-	public Optional<Etudiant> getEudiantById(Long Id) {
-				return etudiants.stream().filter(etudiant->etudiant.getId()==Id).findFirst();
-	}
+    
 
-	@SuppressWarnings("unlikely-arg-type")
-	@Override
-	public void DeleteEtudiant(Long Id) {
-		etudiants.remove(Id);
-	}
-
-	@Override
-	public void AddEtudiant(Etudiant etud) {
-		etudiants.add(etud);
-	}
-
-	@Override
-	public Boolean modifEtudiant(Long Id, Etudiant  newEtud) {
-			Optional<Etudiant> optional= getEudiantById(Id);
-			if (optional.isPresent()) {
-				Etudiant etudiant=optional.get();
-				etudiant.setAdresses(newEtud.getAdresses());
-				etudiant.setAge(newEtud.getAge());
-				etudiant.setLastName(newEtud.getLastName());
-				etudiant.setFirstName(null);
-				etudiant.setRoles(newEtud.getRoles());
-				return true;}
-				else
-					return false ;
+    @Override
+    public List<Etudiant> GetAllEtudiant() {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        List<Etudiant> etudiants = null;
+        try {
+            String hql = "SELECT DISTINCT e FROM Etudiant e LEFT JOIN FETCH e.roles LEFT JOIN FETCH e.adresses";
+            Query<Etudiant> query = session.createQuery(hql, Etudiant.class);
+            etudiants = query.getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+        return etudiants;
+    }
 
 
+    @Override
+    public Etudiant getEudiantById(Long id) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Etudiant etudiant = session.get(Etudiant.class, id);
+        session.close();
+        return etudiant;
+    }
 
-				
-			}
-	}
+    @Override
+    public void DeleteEtudiant(Long id) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction transaction = session.beginTransaction();
+        try {
+            Etudiant etudiant = session.get(Etudiant.class, id);
+            if (etudiant != null) {
+                session.delete(etudiant);
+                transaction.commit();
+            }
+        } catch (Exception e) {
+            transaction.rollback();
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+    }
+
+    @Override
+    public void AddEtudiant(Etudiant etud) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction transaction = session.beginTransaction();
+        try {
+            session.save(etud);
+            transaction.commit();
+        } catch (Exception e) {
+            transaction.rollback();
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+    }
+
+    @Override
+    public Boolean modifEtudiant(Long id, Etudiant newEtud) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction transaction = session.beginTransaction();
+        try {
+            Etudiant etudiant = session.get(Etudiant.class, id);
+            if (etudiant != null) {
+                etudiant.setFirstName(newEtud.getFirstName());
+                etudiant.setLastName(newEtud.getLastName());
+                etudiant.setAge(newEtud.getAge());
+                etudiant.setEmail(newEtud.getEmail());
+                session.update(etudiant);
+                transaction.commit();
+                return true;
+            }
+        } catch (Exception e) {
+            transaction.rollback();
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+        return false;
+    }
+}

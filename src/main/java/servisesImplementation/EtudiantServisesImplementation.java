@@ -28,7 +28,7 @@ public class EtudiantServisesImplementation implements EtudiantServise {
 	    }
 
 	    @Override
-	    public Optional<Etudiant> getEudiantById(Long id) {
+	    public Etudiant getEudiantById(Long id) {
 	        return etudiantRepository.getEudiantById(id);
 	    }
 

@@ -12,11 +12,11 @@ public interface EtudiantRepository {
 
 	   List<Etudiant> GetAllEtudiant();
 
-	   Optional<Etudiant> getEudiantById(Long var1);
+	   Etudiant getEudiantById(Long var1);
 
 	   void DeleteEtudiant(Long var1);
 
-	   void AddEtudiant(Etudiant var1);
+	 void AddEtudiant(Etudiant var1);
 
 	   Boolean modifEtudiant(Long var1, Etudiant var2);
 	}

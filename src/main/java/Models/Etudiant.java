@@ -1,16 +1,16 @@
 package Models;
 
 import java.util.Set;
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.ManyToMany;
 
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 @Entity
 public class Etudiant {
 
@@ -23,8 +23,9 @@ public class Etudiant {
     private int age;
     private String email;
 
-    @ManyToMany(mappedBy = "etudiants", cascade = {CascadeType.MERGE}, fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "etudiants", cascade = {CascadeType.MERGE}, fetch = FetchType.EAGER)
     private Set<Role> roles;
+
 
     @OneToMany(mappedBy = "etudiant", cascade = {CascadeType.MERGE, CascadeType.REMOVE}, fetch = FetchType.EAGER)
     private Set<Adresse> adresses;
